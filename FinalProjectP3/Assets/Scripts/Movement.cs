@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour
     public Weapon[] startingWeapons;
 
     //this is only use at start, allow to grant ammo in the inspector. m_AmmoInventory is used during gameplay
-   
+    public AmmoInventoryEntry[] startingAmmo;
 
     [Header("Control Settings")]
     public float MouseSensitivity = 100.0f;
@@ -32,7 +32,9 @@ public class Controller : MonoBehaviour
     public float JumpSpeed = 5.0f;
 
     [Header("Audio")]
-    
+    public RandomPlayer FootstepPlayer;
+    public AudioClip JumpingAudioCLip;
+    public AudioClip LandingAudioClip;
 
     float m_VerticalSpeed = 0.0f;
     bool m_IsPaused = false;
@@ -78,7 +80,18 @@ public class Controller : MonoBehaviour
             PickupWeapon(startingWeapons[i]);
         }
 
-        
+        for (int i = 0; i < startingAmmo.Length; ++i)
+        {
+            ChangeAmmo(startingAmmo[i].ammoType, startingAmmo[i].amount);
+        }
+
+        m_CurrentWeapon = -1;
+        ChangeWeapon(0);
+
+        for (int i = 0; i < startingAmmo.Length; ++i)
+        {
+            m_AmmoInventory[startingAmmo[i].ammoType] = startingAmmo[i].amount;
+        }
 
         m_VerticalAngle = 0.0f;
         m_HorizontalAngle = transform.localEulerAngles.y;
@@ -86,9 +99,12 @@ public class Controller : MonoBehaviour
 
     void Update()
     {
-       
+        if (CanPause && Input.GetButtonDown("Menu"))
+        {
+            PauseMenu.Instance.Display();
+        }
 
-        
+        FullscreenMap.Instance.gameObject.SetActive(Input.GetButton("Map"));
 
         bool wasGrounded = m_Grounded;
         bool loosedGrounding = false;
@@ -124,7 +140,7 @@ public class Controller : MonoBehaviour
                 m_VerticalSpeed = JumpSpeed;
                 m_Grounded = false;
                 loosedGrounding = true;
-                
+                FootstepPlayer.PlayClip(JumpingAudioCLip, 0.8f, 1.1f);
             }
 
             bool running = m_Weapons[m_CurrentWeapon].CurrentState == Weapon.WeaponState.Idle && Input.GetButton("Run");
@@ -213,7 +229,7 @@ public class Controller : MonoBehaviour
 
         if (!wasGrounded && m_Grounded)
         {
-           
+            FootstepPlayer.PlayClip(LandingAudioClip, 0.8f, 1.1f);
         }
     }
 
@@ -287,12 +303,13 @@ public class Controller : MonoBehaviour
                 m_Weapons[m_CurrentWeapon].Selected();
             }
 
-           
+            WeaponInfoUI.Instance.UpdateAmmoAmount(GetAmmo(ammoType));
         }
     }
 
     public void PlayFootstep()
     {
-        
+        FootstepPlayer.PlayRandom();
     }
+}
 }
