@@ -27,6 +27,6 @@ public class StartButton : MonoBehaviour
     void SetStart()
     {
         Debug.Log(button.gameObject.name + " was clicked");
-        gameManager.StartGame(start);
+        
     }
 }
