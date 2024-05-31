@@ -7,13 +7,13 @@ public class NewBehaviourScript : MonoBehaviour
 {
     private Rigidbody targetRb;
     private GameManager gameManager;
-    private float minSpeed = 12;
-    private float maxSpeed = 16;
-    private float maxTorque = 10;
-    private float xRange = 4;
-    private float ySpawnPos = -6;
+    private float minSpeed = 2;
+    private float maxSpeed = 2;
+   
+    private float xRange = -5;
+    private float ySpawnPos = 0;
 
-    public ParticleSystem explosionParticle;
+   
     public int pointValue;
 
     // Start is called before the first frame update
@@ -23,7 +23,7 @@ public class NewBehaviourScript : MonoBehaviour
         gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
 
         targetRb.AddForce(RandomForce(), ForceMode.Impulse);
-        targetRb.AddTorque(RandomTorque(), RandomTorque(), RandomTorque(), ForceMode.Impulse);
+       
 
         transform.position = RandomSpawnPos();
     }
@@ -39,7 +39,7 @@ public class NewBehaviourScript : MonoBehaviour
         if (gameManager.isGameActive)
         {
             Destroy(gameObject);
-            Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
+            
             gameManager.UpdateScore(pointValue);
         }
 
@@ -62,13 +62,10 @@ public class NewBehaviourScript : MonoBehaviour
 
     Vector3 RandomForce()
     {
-        return Vector3.up * Random.Range(minSpeed, maxSpeed);
+        return Vector3.left * Random.Range(minSpeed, maxSpeed);
     }
 
-    float RandomTorque()
-    {
-       return Random.Range(-maxTorque, maxTorque);
-    }
+   
 
     Vector3 RandomSpawnPos()
     {
