@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartButton : MonoBehaviour
+public class DifficultyButton : MonoBehaviour
 {
     private Button button;
     private GameManager gameManager;
-    public int start;
 
+    public int difficulty;
     // Start is called before the first frame update
     void Start()
     {
         button = GetComponent<Button>();
-        
-
-        button.onClick.AddListener(SetStart);
+        gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        button.onClick.AddListener(SetDifficulty);
     }
 
     // Update is called once per frame
@@ -24,9 +23,9 @@ public class StartButton : MonoBehaviour
         
     }
 
-    void SetStart()
+    void SetDifficulty()
     {
-        Debug.Log(button.gameObject.name + " was clicked");
-        
+        Debug.Log(button.gameObject.name + "was clicked");
+        gameManager.StartGame(difficulty);
     }
 }
